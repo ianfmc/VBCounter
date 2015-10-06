@@ -162,6 +162,7 @@ var reset = function () {
 	bottomGames = 0;
 	
 	duringGame = true;
+	draw();
 };
 
 /**
@@ -189,10 +190,12 @@ main.on('click', 'down', function (event) {
 });
 
 main.on('click', 'select', function (event) {
+	console.log('during game? ' + duringGame);
 	if (duringGame === true) {
 		return;
 	}
 	else {
+		console.log('about to reset');
 		reset();
 	}
 });
