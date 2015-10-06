@@ -1,20 +1,35 @@
 /**
- * Welcome to Pebble.js!
- *
- * This is where you write your app.
+ * Volleyball Counter app
+ * (c) 2015, Rewind Sports
+ */
+
+/**
+ * Add required libraries
  */
 
 var UI = require('ui');
 var Vector2 = require('vector2');
 
+/**
+ *	Constants
+ */
+
+var singleGameScore = 10;
+
+/**
+ * State 
+ */
+
 var topCounter = 0;
 var bottomCounter = 0;
-
 var topGames = 0;
 var bottomGames = 0;
 
-var main = new UI.Window();
+/**
+ * Set up UI
+ */
 
+var main = new UI.Window();
 var topRect = new UI.Rect({
 	position: new Vector2(1, 1),
 	size: new Vector2(140, 75),
@@ -74,29 +89,27 @@ main.add(topScoreText);
 main.add(bottomRect);
 main.add(bottomScoreText);
 
-main.add(topGameOne);
-main.add(topGameTwo);
-main.add(bottomGameOne);
-main.add(bottomGameTwo);
-
 main.show();
 
-main.on('click', 'up', function (event) {
+/**
+ * Set up UI actions
+ */
 
+main.on('click', 'up', function (event) {
 	update('top');
-	draw();
-	
+	draw();	
 });
 
 main.on('click', 'down', function (event) {
-
 	update('bottom');
 	draw();
-
 });
 
+/**
+ * Draw the Main Window
+ */ 
+
 var draw = function () {
-	
 	var topRect = new UI.Rect({
 		position: new Vector2(1, 1),
 		size: new Vector2(140, 80),
@@ -132,11 +145,29 @@ var draw = function () {
 	main.add(bottomRect);
 	main.add(bottomScoreText);
 	
+	if (topGames === 1) {
+		main.add(topGameOne);
+	}	
+	else if (topGames === 2) {
+		main.add(topGameOne);
+		main.add(topGameTwo);
+	}
+	
+	if (bottomGames === 1) {
+		main.add(bottomGameOne);
+	}
+	else if (bottomGames === 2) {
+		main.add(bottomGameOne);
+		main.add(bottomGameTwo);
+	}
 	main.show();
 };
 
+/**
+ * Update UI elements after UI action
+ */
+
 var update = function (side) {
-	
 	if (side === 'top') {
 		topCounter = topCounter + 1;
 	}
@@ -144,12 +175,12 @@ var update = function (side) {
 		bottomCounter = bottomCounter + 1;
 	}
 	
-	if (topCounter > 25) {
+	if (topCounter > singleGameScore) {
 		topCounter = 0;
 		bottomCounter = 0;
 		topGames = topGames + 1;
 	}
-	else if (bottomCounter > 25) {
+	else if (bottomCounter > singleGameScore) {
 		topCounter = 0;
 		bottomCounter = 0;
 		bottomGames = bottomGames + 1;
