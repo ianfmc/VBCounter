@@ -15,6 +15,8 @@ var Vector2 = require('vector2');
  */
 
 var singleGameScore = 10;
+var winsForMatch = 2;
+var midlineY = 80;
 
 /**
  * State 
@@ -25,125 +27,85 @@ var bottomCounter = 0;
 var topGames = 0;
 var bottomGames = 0;
 
+var duringGame = true;
+
+/**
+ * UI Elements
+ */
+
+var topRect;
+var topScoreText;
+var bottomRect;
+var bottomScoreText;
+
+var main = new UI.Window();
+
 /**
  * Set up UI
  */
 
-var main = new UI.Window();
-var topRect = new UI.Rect({
-	position: new Vector2(1, 1),
-	size: new Vector2(140, 75),
-	backgroundColor: 'white'
-});
+var layout = function () {
+	topRect = new UI.Rect({
+		position: new Vector2(1, 1),
+		size: new Vector2(140, midlineY - 1),
+		backgroundColor: 'white'
+	});
+	topScoreText = new UI.Text({
+		position: new Vector2(1, 10),
+		size: new Vector2(140, midlineY - 1),
+		text: topCounter,
+		color: 'black',
+		font: 'ROBOTO_BOLD_SUBSET_49',
+		textAlign: 'center'
+	});
+	bottomRect = new UI.Rect({
+		position: new Vector2(1, midlineY),
+		size: new Vector2(140, midlineY - 1),
+		backgroundColor: 'black'
+	});	
+	bottomScoreText = new UI.Text({
+		position: new Vector2(1, midlineY),
+		size: new Vector2(140, midlineY - 1),
+		text: bottomCounter,
+		color: 'white',
+		font: 'ROBOTO_BOLD_SUBSET_49',
+		textAlign: 'center'
+	});
+	main.add(topRect);
+	main.add(topScoreText);
+	main.add(bottomRect);
+	main.add(bottomScoreText);
+};
 
-var topScoreText = new UI.Text({
-  position: new Vector2(1, 10),
-  size: new Vector2(140, 80),
-  text: topCounter,
-	color: 'black',
-	font: 'ROBOTO_BOLD_SUBSET_49',
-	textAlign: 'center'
-});
-
-var bottomRect = new UI.Rect({
-	position: new Vector2(1, 85),
-	size: new Vector2(140, 75),
-	backgroundColor: 'black'
-});	
-
-var bottomScoreText = new UI.Text({
-  position: new Vector2(1, 85),
-  size: new Vector2(140, 80),
-  text: bottomCounter,
-	color: 'white',
-	font: 'ROBOTO_BOLD_SUBSET_49',
-	textAlign: 'center'
-});
-
-var topGameOne = new UI.Circle({
-	position: new Vector2(120, 20),
-	radius: 10,
-	backgroundColor: 'black'
-});
- 
-var topGameTwo = new UI.Circle({
-	position: new Vector2(120, 50),
-	radius: 10,
-	backgroundColor: 'black'
-});
-
-var bottomGameOne = new UI.Circle({
-	position: new Vector2(120, 105),
-	radius: 10,
-	backgroundColor: 'white'
-});
-
-var bottomGameTwo = new UI.Circle({
-	position: new Vector2(120, 135),
-	radius: 10,
-	backgroundColor: 'white'
-});
-
-main.add(topRect);
-main.add(topScoreText);
-main.add(bottomRect);
-main.add(bottomScoreText);
-
+layout();
 main.show();
-
-/**
- * Set up UI actions
- */
-
-main.on('click', 'up', function (event) {
-	update('top');
-	draw();	
-});
-
-main.on('click', 'down', function (event) {
-	update('bottom');
-	draw();
-});
 
 /**
  * Draw the Main Window
  */ 
 
 var draw = function () {
-	var topRect = new UI.Rect({
-		position: new Vector2(1, 1),
-		size: new Vector2(140, 80),
+	layout();
+	var topGameOne = new UI.Circle({
+		position: new Vector2(120, 20),
+		radius: 10,
+		backgroundColor: 'black'
+	});
+	var topGameTwo = new UI.Circle({
+		position: new Vector2(120, 50),
+		radius: 10,
+		backgroundColor: 'black'
+	});
+	var bottomGameOne = new UI.Circle({
+		position: new Vector2(120, 105),
+		radius: 10,
 		backgroundColor: 'white'
 	});
-
-	var topScoreText = new UI.Text({
- 		position: new Vector2(1, 10),
- 	 	size: new Vector2(140, 80),
-  	text: topCounter,
-		color: 'black',
-		font: 'ROBOTO_BOLD_SUBSET_49',
-		textAlign: 'center'
+	var bottomGameTwo = new UI.Circle({
+		position: new Vector2(120, 135),
+		radius: 10,
+		backgroundColor: 'white'
 	});
-
-	var bottomRect = new UI.Rect({
-		position: new Vector2(1, 85),
-		size: new Vector2(140, 80),
-		backgroundColor: 'black'
-	});	
-
-	var bottomScoreText = new UI.Text({
-  	position: new Vector2(1, 85),
-  	size: new Vector2(140, 80),
-  	text: bottomCounter,
-		color: 'white',
-		font: 'ROBOTO_BOLD_SUBSET_49',
-		textAlign: 'center'
-	});
-
-	main.add(topRect);
-	main.add(topScoreText);
-	main.add(bottomRect);
-	main.add(bottomScoreText);
 	
 	if (topGames === 1) {
 		main.add(topGameOne);
@@ -151,8 +113,7 @@ var draw = function () {
 	else if (topGames === 2) {
 		main.add(topGameOne);
 		main.add(topGameTwo);
-	}
-	
+	}	
 	if (bottomGames === 1) {
 		main.add(bottomGameOne);
 	}
@@ -185,4 +146,53 @@ var update = function (side) {
 		bottomCounter = 0;
 		bottomGames = bottomGames + 1;
 	}
+	
+	if ((topGames === winsForMatch) || (bottomGames === winsForMatch)) {
+		duringGame = false;
+		
+		topCounter = topGames;
+		bottomCounter = bottomGames;
+	}
 };
+
+var reset = function () {
+	topCounter = 0;
+	bottomCounter = 0;
+	topGames = 0;
+	bottomGames = 0;
+	
+	duringGame = true;
+};
+
+/**
+ * Set up UI actions
+ */
+
+main.on('click', 'up', function (event) {
+	if (duringGame === true) {
+		update('top');
+		draw();			
+	}
+	else {
+		return;
+	}
+});
+
+main.on('click', 'down', function (event) {
+	if (duringGame === true) {
+		update('bottom');
+		draw();			
+	}
+	else {
+		return;
+	}
+});
+
+main.on('click', 'select', function (event) {
+	if (duringGame === true) {
+		return;
+	}
+	else {
+		reset();
+	}
+});
