@@ -1,7 +1,7 @@
-/**
- * Volleyball Counter app
+/********************************
+ * Pebble Volleyball Counter app
  * (c) 2015, Rewind Sports
- */
+ ********************************/
 
 /**
  * Add required libraries
@@ -11,12 +11,15 @@ var UI = require('ui');
 var Vector2 = require('vector2');
 
 /**
- *	Constants
+ * Constants
  */
 
 var singleGameScore = 10;
 var winsForMatch = 2;
+
+var offsetTextY = 10;
 var midlineY = 80;
+var width = 140;
 
 /**
  * State 
@@ -41,18 +44,18 @@ var bottomScoreText;
 var main = new UI.Window();
 
 /**
- * Set up UI
+ * Layout UI elements
  */
 
-var layout = function () {
+var layoutElements = function () {
 	topRect = new UI.Rect({
 		position: new Vector2(1, 1),
-		size: new Vector2(140, midlineY - 1),
+		size: new Vector2(width, midlineY - 1),
 		backgroundColor: 'white'
 	});
 	topScoreText = new UI.Text({
-		position: new Vector2(1, 10),
-		size: new Vector2(140, midlineY - 1),
+		position: new Vector2(1, offsetTextY),
+		size: new Vector2(width, midlineY - 1),
 		text: topCounter,
 		color: 'black',
 		font: 'ROBOTO_BOLD_SUBSET_49',
@@ -60,12 +63,12 @@ var layout = function () {
 	});
 	bottomRect = new UI.Rect({
 		position: new Vector2(1, midlineY),
-		size: new Vector2(140, midlineY - 1),
+		size: new Vector2(width, midlineY - 1),
 		backgroundColor: 'black'
 	});	
 	bottomScoreText = new UI.Text({
-		position: new Vector2(1, midlineY),
-		size: new Vector2(140, midlineY - 1),
+		position: new Vector2(1, midlineY+offsetTextY),
+		size: new Vector2(width, midlineY - 1),
 		text: bottomCounter,
 		color: 'white',
 		font: 'ROBOTO_BOLD_SUBSET_49',
@@ -77,15 +80,15 @@ var layout = function () {
 	main.add(bottomScoreText);
 };
 
-layout();
+layoutElements();
 main.show();
 
 /**
  * Draw the Main Window
  */ 
 
-var draw = function () {
-	layout();
+var drawUI = function () {
+	layoutElements();
 	var topGameOne = new UI.Circle({
 		position: new Vector2(120, 20),
 		radius: 10,
@@ -155,6 +158,10 @@ var update = function (side) {
 	}
 };
 
+/**
+ * End-of-game: set all scores to 0
+ */
+
 var reset = function () {
 	topCounter = 0;
 	bottomCounter = 0;
@@ -162,7 +169,6 @@ var reset = function () {
 	bottomGames = 0;
 	
 	duringGame = true;
-	draw();
 };
 
 /**
@@ -172,23 +178,21 @@ var reset = function () {
 main.on('click', 'up', function (event) {
 	if (duringGame === true) {
 		update('top');
-		draw();			
+		drawUI();			
 	}
 	else {
 		return;
 	}
 });
-
 main.on('click', 'down', function (event) {
 	if (duringGame === true) {
 		update('bottom');
-		draw();			
+		drawUI();			
 	}
 	else {
 		return;
 	}
 });
-
 main.on('click', 'select', function (event) {
 	console.log('during game? ' + duringGame);
 	if (duringGame === true) {
@@ -197,5 +201,6 @@ main.on('click', 'select', function (event) {
 	else {
 		console.log('about to reset');
 		reset();
+		drawUI();
 	}
 });
