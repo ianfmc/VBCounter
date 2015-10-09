@@ -1,0 +1,56 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+  <link rel='stylesheet' type='text/css' href='bower_components/Slate/dist/css/slate.min.css'>
+</head>
+<body>
+
+  <div class='item-container-header'>Volleyball Counter Settings</div>
+  <div class='item-container'>
+    <div class='item-container-content'>
+      <div class='item'>
+	Use this configuration page to choose the settings you would like applied to your app.
+      </div>
+    </div>
+  </div>
+
+  <div class='item-container-header'>Match Format</div>
+  <div class='item-container'>
+    <div class='item-container-content'>
+      <label class='item'>
+	Single Game<input type='radio' id='match-1' class='item-radio' name='match' value='1'>
+      </label>
+      <label class='item'>
+	Best of 3<input type='radio' id='match-3' class='item-radio' name='match' value='2' checked>
+      </label>
+      <label class='item'>
+	Best of 5<input type='radio' id='match-5' class='item-radio' name='match' value='3'>
+      </label>
+    </div>
+  </div>
+
+  <div class='item-container-header'>Last Game Score</div>
+  <div class='item-container'>
+    <div class='item-container-content'>
+      <label class='item'>
+	Game to 25?
+	<input type='checkbox' class='item-toggle' id='normal'>
+      </label>
+    </div>
+  </div>
+  <div class='item-container-footer'>
+    These settings only change on the watch after you tap save
+  </div>
+
+  <div class='item-container'>
+    <div class='button-container'>
+	<input type='button' id='submitButton' class='item-button' value='SUBMIT'>
+    </div>
+  </div>
+
+  <script src='bower_components/Slate/dist/js/slate.min.js'></script>
+  <script src='js/main.js'></script>
+
+</body>
+</html>
