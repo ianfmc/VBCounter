@@ -15,28 +15,26 @@ var Settings = require('settings');
  * Constants
  */
 
-var singleGameScore = 5;
+var normalGameScore = 25;
+var shortGameScore = 15;
+var normal = true;
 var winsForMatch = 2;
 
 var offsetTextY = 10;
-var midlineY = 80;
+var midlineY = 75;
 var width = 140;
 
 /**
  * Save and fetch config settings
  */
 
-// Set a configurable with just the close callback
-
 Settings.config(
   { url: 'ianfmc.github.io/VBCounter/config/index.html' },
   function(e) {
-    console.log('closed configurable');
-
 		winsForMatch = parseInt(e.options.match);
+		normal = Boolean(e.options.normal);
 		
     console.log(JSON.stringify(e.options));
-    console.log(winsForMatch);
 
     // Show the raw response if parsing failed
     if (e.failed) {
@@ -164,18 +162,20 @@ var updateState = function (side) {
 	}
 	
 	/*
-	 * Determine if the game is over
+	 * Determine if the game is over; i.e., must win by 2
 	 */
 	
-	if (topCounter > singleGameScore) {
-		topCounter = 0;
-		bottomCounter = 0;
-		topGames = topGames + 1;
-	}
-	else if (bottomCounter > singleGameScore) {
-		topCounter = 0;
-		bottomCounter = 0;
-		bottomGames = bottomGames + 1;
+	if (Math.abs(topCounter - bottomCounter) > 1) {
+		if (topCounter > normalGameScore) {
+			topCounter = 0;
+			bottomCounter = 0;
+			topGames = topGames + 1;
+		}
+		else if (bottomCounter > normalGameScore) {
+			topCounter = 0;
+			bottomCounter = 0;
+			bottomGames = bottomGames + 1;
+		}
 	}
 	
 	/*
@@ -187,6 +187,8 @@ var updateState = function (side) {
 		
 		topCounter = topGames;
 		bottomCounter = bottomGames;
+		
+		normalGameScore = 25;
 	}
 };
 
@@ -201,6 +203,11 @@ var resetState = function () {
 	bottomGames = 0;
 	
 	duringGame = true;
+	if ((topGames + bottomGames) === (winsForMatch - 1)) {
+		if (!normal) {
+			normalGameScore = shortGameScore;
+		}
+	}
 };
 
 /**
@@ -208,6 +215,7 @@ var resetState = function () {
  */
 
 main.on('click', 'up', function (event) {
+	console.log('up');
 	if (duringGame === true) {
 		updateState('top');
 		drawUI();			
@@ -217,6 +225,7 @@ main.on('click', 'up', function (event) {
 	}
 });
 main.on('click', 'down', function (event) {
+	console.log('down');
 	if (duringGame === true) {
 		updateState('bottom');
 		drawUI();			
@@ -235,11 +244,6 @@ main.on('click', 'select', function (event) {
 	}
 });
 main.on('longClick', 'select', function (event) {
-	if (duringGame === true) {
-		return;
-	}
-	else {
-		resetState();
-		drawUI();
-	}
+	resetState();
+	drawUI();
 });
