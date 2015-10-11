@@ -9,17 +9,41 @@
 
 var UI = require('ui');
 var Vector2 = require('vector2');
+var Settings = require('settings');
 
 /**
  * Constants
  */
 
-var singleGameScore = 10;
+var singleGameScore = 5;
 var winsForMatch = 2;
 
 var offsetTextY = 10;
 var midlineY = 80;
 var width = 140;
+
+/**
+ * Save and fetch config settings
+ */
+
+// Set a configurable with just the close callback
+
+Settings.config(
+  { url: 'ianfmc.github.io/VBCounter/config/index.html' },
+  function(e) {
+    console.log('closed configurable');
+
+		winsForMatch = parseInt(e.options.match);
+		
+    console.log(JSON.stringify(e.options));
+    console.log(winsForMatch);
+
+    // Show the raw response if parsing failed
+    if (e.failed) {
+      console.log(e.response);
+    }
+  }
+);
 
 /**
  * State 
@@ -131,13 +155,17 @@ var drawUI = function () {
  * Update UI elements after UI action
  */
 
-var update = function (side) {
+var updateState = function (side) {
 	if (side === 'top') {
 		topCounter = topCounter + 1;
 	}
 	else {
 		bottomCounter = bottomCounter + 1;
 	}
+	
+	/*
+	 * Determine if the game is over
+	 */
 	
 	if (topCounter > singleGameScore) {
 		topCounter = 0;
@@ -150,6 +178,10 @@ var update = function (side) {
 		bottomGames = bottomGames + 1;
 	}
 	
+	/*
+	 * Determine if the match is over
+	 */ 
+
 	if ((topGames === winsForMatch) || (bottomGames === winsForMatch)) {
 		duringGame = false;
 		
@@ -162,7 +194,7 @@ var update = function (side) {
  * End-of-game: set all scores to 0
  */
 
-var reset = function () {
+var resetState = function () {
 	topCounter = 0;
 	bottomCounter = 0;
 	topGames = 0;
@@ -177,7 +209,7 @@ var reset = function () {
 
 main.on('click', 'up', function (event) {
 	if (duringGame === true) {
-		update('top');
+		updateState('top');
 		drawUI();			
 	}
 	else {
@@ -186,7 +218,7 @@ main.on('click', 'up', function (event) {
 });
 main.on('click', 'down', function (event) {
 	if (duringGame === true) {
-		update('bottom');
+		updateState('bottom');
 		drawUI();			
 	}
 	else {
@@ -194,13 +226,20 @@ main.on('click', 'down', function (event) {
 	}
 });
 main.on('click', 'select', function (event) {
-	console.log('during game? ' + duringGame);
 	if (duringGame === true) {
 		return;
 	}
 	else {
-		console.log('about to reset');
-		reset();
+		resetState();
+		drawUI();
+	}
+});
+main.on('longClick', 'select', function (event) {
+	if (duringGame === true) {
+		return;
+	}
+	else {
+		resetState();
 		drawUI();
 	}
 });
