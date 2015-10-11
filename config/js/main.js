@@ -43,7 +43,7 @@ function loadOptions() {
     else {
 	$normal[0].checked = true;
 	$matchThree[0].checked = true;
-    }
+    };
 };
 
 function getAndStoreConfigData() {
@@ -58,19 +58,19 @@ function getAndStoreConfigData() {
 	$match = 1;
     }
     else if ($matchThree[0].checked) {
-	$match = 3;
+	$match = 2;
     }
     else {
-	$match = 5;
+	$match = 3;
     }
     var options = {
 	normal: $normal[0].checked,
 	match: $match
     };
-
     localStorage.normal = options.normal;
     localStorage.match = options.match;
 
+    console.log(options);
     return options;
 };
 
