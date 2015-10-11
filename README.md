@@ -1,2 +1,2 @@
-# VBCounter
-Pebble Volleyball Counter
+# VBCounter Config
+Pebble Volleyball Counter App Configuration
