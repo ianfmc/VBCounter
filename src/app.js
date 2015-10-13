@@ -18,7 +18,7 @@ var Settings = require('settings');
 var normalGameScore = 25;
 var shortGameScore = 15;
 var normal = true;
-var winsForMatch = 2;
+var winsForMatch = 1;
 
 var offsetTextY = 10;
 var midlineY = 75;
@@ -166,19 +166,19 @@ var updateState = function (side) {
 	 */
 	
 	if (Math.abs(topCounter - bottomCounter) > 1) {
-		if (topCounter > normalGameScore) {
+		if (topCounter >= normalGameScore) {
 			topCounter = 0;
 			bottomCounter = 0;
 			topGames = topGames + 1;
 		}
-		else if (bottomCounter > normalGameScore) {
+		else if (bottomCounter >= normalGameScore) {
 			topCounter = 0;
 			bottomCounter = 0;
 			bottomGames = bottomGames + 1;
 		}
 	}
 	
-	/*
+	/**
 	 * Determine if the match is over
 	 */ 
 
@@ -203,11 +203,16 @@ var resetState = function () {
 	bottomGames = 0;
 	
 	duringGame = true;
+	
+	/**
+	
 	if ((topGames + bottomGames) === (winsForMatch - 1)) {
 		if (!normal) {
 			normalGameScore = shortGameScore;
 		}
 	}
+	
+	*/
 };
 
 /**
@@ -235,6 +240,7 @@ main.on('click', 'down', function (event) {
 	}
 });
 main.on('click', 'select', function (event) {
+	console.log('select');
 	if (duringGame === true) {
 		return;
 	}
