@@ -62,6 +62,10 @@ var topRect;
 var topScoreText;
 var bottomRect;
 var bottomScoreText;
+var topGameOne;
+var topGameTwo;
+var bottomGameOne;
+var bottomGameTwo;
 
 var main = new UI.Window();
 
@@ -96,6 +100,28 @@ var layoutElements = function () {
 		font: 'ROBOTO_BOLD_SUBSET_49',
 		textAlign: 'center'
 	});
+	
+	topGameOne = new UI.Circle({
+		position: new Vector2(120, 20),
+		radius: 10,
+		backgroundColor: 'black'
+	});
+	topGameTwo = new UI.Circle({
+		position: new Vector2(120, 50),
+		radius: 10,
+		backgroundColor: 'black'
+	});
+	bottomGameOne = new UI.Circle({
+		position: new Vector2(120, 105),
+		radius: 10,
+		backgroundColor: 'white'
+	});
+	bottomGameTwo = new UI.Circle({
+		position: new Vector2(120, 135),
+		radius: 10,
+		backgroundColor: 'white'
+	});
+	
 	main.add(topRect);
 	main.add(topScoreText);
 	main.add(bottomRect);
@@ -110,27 +136,9 @@ main.show();
  */ 
 
 var drawUI = function () {
-	layoutElements();
-	var topGameOne = new UI.Circle({
-		position: new Vector2(120, 20),
-		radius: 10,
-		backgroundColor: 'black'
-	});
-	var topGameTwo = new UI.Circle({
-		position: new Vector2(120, 50),
-		radius: 10,
-		backgroundColor: 'black'
-	});
-	var bottomGameOne = new UI.Circle({
-		position: new Vector2(120, 105),
-		radius: 10,
-		backgroundColor: 'white'
-	});
-	var bottomGameTwo = new UI.Circle({
-		position: new Vector2(120, 135),
-		radius: 10,
-		backgroundColor: 'white'
-	});
+	
+	topScoreText.text(topCounter);
+	bottomScoreText.text(bottomCounter);
 	
 	if (topGames === 1) {
 		main.add(topGameOne);
@@ -146,6 +154,8 @@ var drawUI = function () {
 		main.add(bottomGameOne);
 		main.add(bottomGameTwo);
 	}
+	main.add(topScoreText);
+	main.add(bottomScoreText);
 	main.show();
 };
 
@@ -205,14 +215,11 @@ var resetState = function () {
 	duringGame = true;
 	
 	/**
-	
 	if ((topGames + bottomGames) === (winsForMatch - 1)) {
 		if (!normal) {
 			normalGameScore = shortGameScore;
 		}
-	}
-	
-	*/
+	} */
 };
 
 /**
